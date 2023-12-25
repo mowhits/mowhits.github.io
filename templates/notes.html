@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2 class="f2 lh-title">
+    {{ section.title }}
+</h2>
+{% for page in section.pages %}
+<div class="pv2 white f3"><a class="link hover-bg-gold ph1 white" href="{{ page.permalink | safe }}">{{ page.title }}</a> / {{ page.date }}</div> 
+{% endfor %}
+
+{% endblock content %}
