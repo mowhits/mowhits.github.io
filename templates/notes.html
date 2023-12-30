@@ -5,7 +5,7 @@
     {{ section.title }}
 </h2>
 {% for page in section.pages %}
-<div class="pv2 white f3"><a class="link hover-bg-gold ph1 white" href="{{ page.permalink | safe }}">{{ page.title }}</a> / {{ page.date }}</div> 
+<div class="pv2 mid-gray f3"><a class="link hover-bg-blue ph1 mid-gray" href="{{ page.permalink | safe }}">{{ page.title }}</a> / {{ page.date }}</div> 
 {% endfor %}
 
 {% endblock content %}
