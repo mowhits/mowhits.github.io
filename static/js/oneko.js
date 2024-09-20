@@ -9,11 +9,11 @@
 
   const nekoEl = document.createElement("div");
 
-  let nekoPosX = 799;
-  let nekoPosY = 70;
+  let nekoPosX = 32;
+  let nekoPosY = 32;
 
-  let mousePosX = 799;
-  let mousePosY = 70;
+  let mousePosX = 0;
+  let mousePosY = 0;
 
   let frameCount = 0;
   let idleTime = 0;
