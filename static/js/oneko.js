@@ -8,7 +8,6 @@
   if (isReducedMotion) return;
 
   const nekoEl = document.createElement("div");
-
   let nekoPosX = 32;
   let nekoPosY = 32;
 
@@ -90,11 +89,12 @@
     nekoEl.style.width = "32px";
     nekoEl.style.height = "32px";
     nekoEl.style.position = "fixed";
-    nekoEl.style.pointerEvents = "none";
+    nekoEl.style.pointerEvents = "auto";
     nekoEl.style.imageRendering = "pixelated";
     nekoEl.style.left = `${nekoPosX - 16}px`;
     nekoEl.style.top = `${nekoPosY - 16}px`;
     nekoEl.style.zIndex = 2147483647;
+    nekoEl.title = "mraw";
 
     let nekoFile = "/js/oneko.gif"
     const curScript = document.currentScript
