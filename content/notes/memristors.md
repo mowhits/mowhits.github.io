@@ -17,40 +17,42 @@ Mohit Rao Lingarkar (1MS23EI033), Shreyas Reddy (1MS23EI049)
 ![][image2]  
 Figure 1: An array of 17 purpose-built oxygen-depleted titanium dioxide memristors built at HP Labs, imaged by an atomic force microscope.
 
-Memristors, or memory resistors, are a unique type of electrical component which have the ability to *remember* the amount of charge that had previously flown through them. They are nonlinear two-terminal electrical components which relate electric charge $$q$$ to magnetic flux linkage $$\\phi$$. Although the name “memristors” was first coined, postulated and proposed as the fourth fundamental circuit element alongside resistors, inductors and capacitors by Leon Chua in 1971, Memristors as a concept weren’t novel. Research on non-volatile resistive switching, which involves the reversible modulation of resistance, hence conductivity, under application of a voltage, was conceived in the 1960s, when Bernard Widrow created a similar component which he coined the “memistor” (not to be confused with memristor) for an artificial neural network he was developing called ADALINE. In 1968, researchers showed the resistance switching effects of $$TiO\_2$$, which would later be considered evidence of a memristor. Even as far back as 1801, Sir Humphry Davy is said to have performed experiments which could be explained by memristor effects. These findings were initially met with limited attention, but they laid the theoretical foundations for the development of memristors. The first experimental realization, and subsequent recognition, of the memristor was in 2008 by a research team from Hewlett-Packard. The team from HP made several key breakthroughs in understanding the mechanisms behind memristor operation, demonstrating its memory storage and logic computation properties, bringing it closer to commercialization and real world implementation. The discovery that it can perform logic computations opens up the possibility of computations being performed on the chips where data is stored, as opposed to a separate CPU, thus improving space efficiency manifold. This small size, along with its superior speed and energy efficiency makes them strong competitors to transistors. They are also immune to radiation and its related effects such as bitflips – hence are ideal for use in critical infrastructure. Thus, memristors have the potential to revolutionize the way we design and build electronic systems.
+Memristors, or memory resistors, are a unique type of electrical component which have the ability to *remember* the amount of charge that had previously flown through them. They are nonlinear two-terminal electrical components which relate electric charge $q$ to magnetic flux linkage $\\phi$. Although the name “memristors” was first coined, postulated and proposed as the fourth fundamental circuit element alongside resistors, inductors and capacitors by Leon Chua in 1971, Memristors as a concept weren’t novel. Research on non-volatile resistive switching, which involves the reversible modulation of resistance, hence conductivity, under application of a voltage, was conceived in the 1960s, when Bernard Widrow created a similar component which he coined the “memistor” (not to be confused with memristor) for an artificial neural network he was developing called ADALINE. In 1968, researchers showed the resistance switching effects of $TiO\_2$, which would later be considered evidence of a memristor. Even as far back as 1801, Sir Humphry Davy is said to have performed experiments which could be explained by memristor effects. These findings were initially met with limited attention, but they laid the theoretical foundations for the development of memristors. The first experimental realization, and subsequent recognition, of the memristor was in 2008 by a research team from Hewlett-Packard. The team from HP made several key breakthroughs in understanding the mechanisms behind memristor operation, demonstrating its memory storage and logic computation properties, bringing it closer to commercialization and real world implementation. The discovery that it can perform logic computations opens up the possibility of computations being performed on the chips where data is stored, as opposed to a separate CPU, thus improving space efficiency manifold. This small size, along with its superior speed and energy efficiency makes them strong competitors to transistors. They are also immune to radiation and its related effects such as bitflips – hence are ideal for use in critical infrastructure. Thus, memristors have the potential to revolutionize the way we design and build electronic systems.
 
 # Theory
 
 ![][image3]  
 Figure 2: Symmetries of resistor, capacitor, inductor and memristor
 
-We know that there are four fundamental circuit variables (voltage $$v$$,electric charge $$q$$, current $$i$$ and magnetic flux $$\\phi$$), which can be combined in six ways, corresponding to the following set of equations:  
- $$  
-dq \= idt   
-d\\phi \= vdt   
-v \= Ri   
-q \= Cv   
-d\\phi \= Ldi   
-d\\phi \= Mdq$$  
-where the last relationship between $$\phi$$ and $$q$$ corresponds to the memristor.![][image4] and $$q$$ corresponds to the memristor.  
+We know that there are four fundamental circuit variables (voltage $v$,electric charge $q$, current $i$ and magnetic flux $\\phi$), which can be combined in six ways, corresponding to the following set of equations:  
+$$
+dq \= idt \\
+d\\phi \= vdt \\
+v \= Ri \\
+q \= Cv \\
+d\\phi \= Ldi \\
+d\\phi \= Mdq \\
+$$
+where the last relationship between $\phi$ and $q$ corresponds to the memristor.
+
 ![][image5]  
 Figure 3: Circuit symbol of a memristor
 
 We can characterize the memristor by its memristance function describing the charge-dependent rate of change of magnetic flux linkage with charge, or  
-$$M(q) \= \\frac{d\\phi}}{dq}$$  
-Since $$\\phi$$ does not play a role in the physical working principles of the memristor, we can rewrite the relationship by substituting the flux as time integral of voltage and charge as the time integral of current (first two equations) to get  
-$$M(q(t)) \= \\frac{d\\phi/dt}{dq/dt} \= \\frac{V(t)}{I(t)}$$  
-or $$V(t) \= M(q(t))I(t)$$.  
-From this, we infer that memristance is charge-dependent resistance. If $$M(q(t))$$ is a constant, or doesn’t vary by charge, then we obtain a linear relationship between current and voltage (Ohm’s law). Under AC, the equation may be linear if there is a measurable voltage induced in the circuit without net charge movement, approximating for a small signal.  
-The memristance function can be mathematically modeled for $$TiO\_2$$ thin films as  
-$$M(q(t)) \= R\_{\\text{OFF}}\\left(1 \- \\frac{\\mu R\_{\\text{ON}}}{D^2}q(t)\\right)$$  
-where $$R\_{\\text{OFF}}$$ represents the OFF or high resistance state, $$R\_{\\text{ON}}$$ represents the ON or low resistance state, $$\\mu$$ represents the mobility of dopants in the film and $$D$$ represents the thickness of the film.  
+$M(q) \= \\frac{d\\phi}{dq}$  
+Since $\\phi$ does not play a role in the physical working principles of the memristor, we can rewrite the relationship by substituting the flux as time integral of voltage and charge as the time integral of current (first two equations) to get  
+$M(q(t)) \= \\frac{d\\phi/dt}{dq/dt} \= \\frac{V(t)}{I(t)}$  
+or $V(t) \= M(q(t))I(t)$.  
+From this, we infer that memristance is charge-dependent resistance. If $M(q(t))$ is a constant, or doesn’t vary by charge, then we obtain a linear relationship between current and voltage (Ohm’s law). Under AC, the equation may be linear if there is a measurable voltage induced in the circuit without net charge movement, approximating for a small signal.  
+The memristance function can be mathematically modeled for $TiO\_2$ thin films as  
+$M(q(t)) \= R\_{\\text{OFF}}\\left(1 \- \\frac{\\mu R\_{\\text{ON}}}{D^2}q(t)\\right)$  
+where $R\_{\\text{OFF}}$ represents the OFF or high resistance state, $R\_{\\text{ON}}$ represents the ON or low resistance state, $\\mu$ represents the mobility of dopants in the film and $D$ represents the thickness of the film.  
 ![][image6]  
 Figure 3: Diagram of doped metal oxide thin film and simple equivalent circuits. Electric current through the memristor shifts the doped oxygen vacancies in the metal oxide thin film, causing a gradual and persistent change in electrical resistance.
 
-Further, if there is no current applied, the memristor is static, and $$M$$ is constant. This is the essence of the memory effect – upon the removal of power, the state of the memristor persists. This attribute of memristors is used for various applications, including memory devices such as RRAMs. Another characteristic of the memristor is the existence of the pinched hysteresis effect.  
+Further, if there is no current applied, the memristor is static, and $M$ is constant. This is the essence of the memory effect – upon the removal of power, the state of the memristor persists. This attribute of memristors is used for various applications, including memory devices such as RRAMs. Another characteristic of the memristor is the existence of the pinched hysteresis effect.  
  ![][image7]  
-Figure 4: Example of pinched hysteresis loop. Here, the applied voltage is $$v\_0\\sin{(\\omega\_0t)}$$ and the resistance ratio is $$R\_{\\text{OFF}}/{R\_{\\text{ON}} \= 160$$
+Figure 4: Example of pinched hysteresis loop. Here, the applied voltage is $v\_0\\sin{(\\omega\_0t)}$ and the resistance ratio is $R\_{\\text{OFF}}/{R\_{\\text{ON}} \= 160$
 
 The slope of the pinched hysteresis curves represent the electrical resistance of the memristor. The change in slope of the curves demonstrates switching between different resistance states which is a phenomenon central to RRAM and other forms of two-terminal resistance memory. At high frequencies, memristive theory predicts the pinched hysteresis effect will degenerate, resulting in a straight line representative of a linear resistor, as seen in Figure 4\.
 
@@ -58,9 +60,9 @@ The slope of the pinched hysteresis curves represent the electrical resistance o
 
 ## Process of fabrication
 
-1. Substrate Preparation:The process starts with the preparation of a suitable substrate. Common substrates include silicon wafers or glass slides coated with a thin layer of silicon dioxide ($$SiO\_2$$) or another insulating material.  
+1. Substrate Preparation:The process starts with the preparation of a suitable substrate. Common substrates include silicon wafers or glass slides coated with a thin layer of silicon dioxide ($SiO\_2$) or another insulating material.  
 2. Thin Film Deposition: Memristors are typically fabricated using thin-film deposition techniques such as physical vapor deposition (PVD) or chemical vapor deposition (CVD). These techniques allow for the precise deposition of thin layers of materials onto the substrate.  
-3. Selection of Materials: Memristors are often composed of metal oxides such as titanium dioxide ($$TiO\_2$$), tantalum oxide ($$Ta\_2O\_5$$), or hafnium oxide ($$HfO\_2$$). The selection of materials depends on the desired properties of the memristor, such as resistance switching behavior and stability.   
+3. Selection of Materials: Memristors are often composed of metal oxides such as titanium dioxide ($TiO\_2$), tantalum oxide ($Ta\_2O\_5$), or hafnium oxide ($HfO\_2$). The selection of materials depends on the desired properties of the memristor, such as resistance switching behavior and stability.   
 4. Electrode Deposition: Metal electrodes are deposited onto the thin film using techniques like sputtering or evaporation. These electrodes serve as the electrical contacts for the memristor device.  
 5. Patterning: Photolithography or electron beam lithography is used to define the precise dimensions and shape of the memristor device. This involves depositing a photoresist layer onto the substrate, exposing it to light or electron beams through a mask, and then developing the pattern.  
 6. Etching: Etching techniques such as wet etching or dry etching are used to remove unwanted material from the substrate, leaving behind the desired pattern for the memristor device.  
@@ -72,7 +74,7 @@ The slope of the pinched hysteresis curves represent the electrical resistance o
 Overall, the fabrication of memristors involves a combination of thin-film deposition, patterning, electrode deposition, and characterization techniques to create electronic devices with unique resistance switching properties.
 
 ![][image8]  
-Figure 5: Schematic of the fabrication process of the $$Au$$/$$TiO\_2$$/$$Au$$ memristor device. (a) Deposition of gold thin film on the $$SiO\_2$$/$$Si$$(100) substrate, (b) pattering the gold thin film as BE by photolithography approach, (c) $$TiO\_2$$ thin film deposition as active layer using a shadow mask, (d) deposition of gold thin film by second shadow mask, (e) photolithography patterning of the gold thin film as TE, (f) the final fabricated device.
+Figure 5: Schematic of the fabrication process of the $Au$/$TiO\_2$/$Au$ memristor device. (a) Deposition of gold thin film on the $SiO\_2$/$Si$(100) substrate, (b) pattering the gold thin film as BE by photolithography approach, (c) $TiO\_2$ thin film deposition as active layer using a shadow mask, (d) deposition of gold thin film by second shadow mask, (e) photolithography patterning of the gold thin film as TE, (f) the final fabricated device.
 
 ## Components of the memristor
 
@@ -99,7 +101,7 @@ Figure 5: Schematic of the fabrication process of the $$Au$$/$$TiO\_2$$/$$Au$$ m
    * These interfaces govern the migration of ions or vacancies within the resistive material during resistance switching.  
    * Interface engineering can be employed to optimize device performance, improve switching kinetics, and enhance device reliability.  
 6. Interlayer Dielectric:  
-   * Interlayer dielectrics, such as silicon dioxide ($$SiO\_2$$), are often used to electrically isolate different components of the memristor device.  
+   * Interlayer dielectrics, such as silicon dioxide ($SiO\_2$), are often used to electrically isolate different components of the memristor device.  
    * They prevent electrical shorting between the bottom and top electrodes and provide mechanical support for the device structure.  
    * Proper selection and deposition of interlayer dielectrics are essential for ensuring device integrity and reliability.  
 7. Encapsulation Layer:  
@@ -128,7 +130,7 @@ In modern CPU device operation, 80% to 90% of energy consumption and timing dela
 
 Future CPU applications, such as A.I. Language Model programming and image processing for 8K UHD video, will require I/O memory access bandwidth in the range of 10 terabytes/sec. To meet these bandwidth requirements, on-chip CPU memory will need to be greater than 1 terabyte in size. An SRAM alternative may be needed to meet these future on-chip memory requirements. One possible solution to this problem would be to use Resistive Random Access Memory (RRAM). 
 
-An RRAM device is a non-volatile memory cell that contains memristor materials. These materials act as a dielectric insulator. When a sufficiently high voltage is applied a conduction path is formed. Typical memory materials used as memristors include $$HfO\_2$$, $$Ta\_2O\_5$$, and $$TiO\_2$$. The resistive state of the memory cell can be read using electronic circuits to determine if the memory cell is programmed or erased, thus identifying the state of the memory bit. RRAM memory cells can be stacked vertically, like 3D NAND architecture, to increase the storage density. 
+An RRAM device is a non-volatile memory cell that contains memristor materials. These materials act as a dielectric insulator. When a sufficiently high voltage is applied a conduction path is formed. Typical memory materials used as memristors include $HfO\_2$, $Ta\_2O\_5$, and $TiO\_2$. The resistive state of the memory cell can be read using electronic circuits to determine if the memory cell is programmed or erased, thus identifying the state of the memory bit. RRAM memory cells can be stacked vertically, like 3D NAND architecture, to increase the storage density. 
 
 A 3D RRAM model has 64 layers of wordlines (WLs) with pillars placed in a hexagonal spaced array. The wordlines are formed with alternating layers of metallic conductors and oxide dielectric. The pillars are etched through the WL and then a thin layer of memory material is deposited onto the sidewalls of the pillars. The memory material is removed from the bottom and top of the pillars, leaving only the material on the sidewalls of the pillar. The pillars are then filled with refractory metal and tungsten.   
 ![][image10]  
@@ -141,12 +143,12 @@ The memory cell consists of two metal electrodes: the metallic conductor wordlin
 ![][image11]  
 Figure 8: Cross-sectional view of the memory cell
 
-The conductive filament resistance varies at different program voltages. The low resistance state ($$R\_{\\text{ON}}$$) is in the range of $$10k\\Omega$$ and the high resistance state ($$R\_{\\text{OFF}}$$) is in the range of $$1M\\Omega$$. A virtual model to demonstrate the switching resistances of a 3D RRAM device indicated the OFF state of the memristor being approximately 100 times higher resistance than the ON state. 
+The conductive filament resistance varies at different program voltages. The low resistance state ($R\_{\\text{ON}}$) is in the range of $10k\\Omega$ and the high resistance state ($R\_{\\text{OFF}}$) is in the range of $1M\\Omega$. A virtual model to demonstrate the switching resistances of a 3D RRAM device indicated the OFF state of the memristor being approximately 100 times higher resistance than the ON state. 
 
 ## Usage in memristor-based RRAM
 
 1. Fundamental Principle: Memristors are two-terminal passive circuit elements whose resistance depends on the history of the currents and voltages applied to them. This property enables them to "remember" their resistance states, making them ideal for non-volatile memory applications like RRAM.  
-2. Switching Mechanism: Memristors in RRAM devices undergo reversible changes in resistance when subjected to an electric field or current. This switching can occur between high resistance state ($$R\_{\\text{ON}}$$) and low resistance state ($$R\_{\\text{OFF}}$$), representing the "0" and "1" states, respectively. The ability to switch between these states reliably and repeatedly is crucial for data storage.  
+2. Switching Mechanism: Memristors in RRAM devices undergo reversible changes in resistance when subjected to an electric field or current. This switching can occur between high resistance state ($R\_{\\text{ON}}$) and low resistance state ($R\_{\\text{OFF}}$), representing the "0" and "1" states, respectively. The ability to switch between these states reliably and repeatedly is crucial for data storage.  
 3. High Density and Low Power: Memristor-based RRAM offers the potential for high-density memory arrays due to their small size and low power consumption. This is because RRAM cells typically consist of just a memristor and a select transistor, enabling dense packing of memory elements on a chip.  
 4. Endurance and Retention: One challenge in RRAM technology is achieving high endurance (number of read/write cycles) and retention (data stability over time). Memristors used in RRAM must exhibit sufficient endurance and retention characteristics to ensure reliable operation over the device's lifespan.  
 5. Integration and Fabrication: Integrating memristors into RRAM devices involves precise fabrication techniques to control the properties of the memristive material and ensure uniform switching behavior across the memory array. Advanced fabrication processes such as atomic layer deposition (ALD) and physical vapor deposition (PVD) are commonly employed for this purpose.  
