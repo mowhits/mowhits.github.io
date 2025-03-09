@@ -3,11 +3,6 @@ title = "ESC232 Assignment - Memristors"
 date = 2024-05-10
 +++
 
-## ESC232 Assignment
-
-Mohit Rao Lingarkar (1MS23EI033), Shreyas Reddy (1MS23EI049)  
-2nd Semester, Section T, Electronics & Instrumentation Engineering
-
 # Memristors
 
 “*Since our brains are made of memristors, the flood gate is now open for commercialization of computers that would compute like human brains, which is totally different from the von Neumann architecture underpinning all digital computers*” \- Leon Chua
