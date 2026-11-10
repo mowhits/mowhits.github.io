@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<title>Rorschach tests and graph theory</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/theme/white.css">
+<style>
+:root{--r-main-font:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;--r-heading-font:var(--r-main-font);--r-heading-text-transform:none;--r-heading-font-weight:700;--r-heading-letter-spacing:0;--r-main-font-size:30px;--r-main-color:#222;--r-heading-color:#12263f}
+.reveal section{text-align:left}.reveal h1{font-size:1.9em}.reveal h2{font-size:1.45em;margin:0 0 .45em}
+.reveal p,.reveal li{line-height:1.38;margin:.35em 0}.reveal ul,.reveal ol{display:block;margin-left:1.1em;width:auto}
+.s{font-size:.72em}.cap{font-size:.58em;color:#555;text-align:center;margin:.2em 0}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:1.4em;align-items:center}.cols3{display:grid;grid-template-columns:repeat(3,1fr);gap:.8em;align-items:start}
+.fig{text-align:center}.fig svg{max-width:100%;height:auto}.minis{display:flex;gap:.5em;justify-content:center}.nm{display:grid;grid-template-columns:290px 1fr;gap:1em;align-items:start}.refs>div{margin-bottom:.35em;font-size:.62em}.mk{font-size:1.4em}.mks{font-size:1.5em;line-height:1;height:1.1em}.mks span{margin:0 .1em}.oc{display:grid;grid-template-columns:repeat(3,1fr);gap:1em;text-align:center}.bw{height:200px;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;font-weight:700;font-size:.8em}.bar{width:64px;background:#9fb3c8;margin-top:.2em}
+.formula{margin:.4em 0;text-align:center}.reveal .katex{font-size:1.05em}
+.ph{border:2px dashed #888;background:#f6f6f6;color:#555;padding:.8em;font-size:.58em;text-align:center;margin:.4em auto;line-height:1.35}
+.A{color:#2b6cb0;font-weight:700}.B{color:#dd6b20;font-weight:700}
+.tile{border:2px solid #dde3ea;border-radius:12px;padding:.5em .8em;text-align:center;background:#fafbfc}
+.reveal table{font-size:.72em;margin:.4em auto}.reveal th,.reveal td{padding:.3em .8em;text-align:center}
+</style></head><body><div class="reveal"><div class="slides">
+
+<section data-background-color="#f4f6f9"><h1>Rorschach tests<br>and graph theory</h1>
+<p>How graph theory lets us describe a district map precisely, score its shape, and compare it with fair alternatives.</p>
+
+</section>
+
+<section>
+<section><h2>What do you see?</h2>
+<div class="ph" style="height:330px">[IMAGE: Unlabelled outline of one Bengaluru assembly constituency (e.g. KR Puram), solid black on white, no names, roads or ward lines. Check that it really looks like a chicken first.]</div>
+<p class="fragment">Take a few seconds. Clouds, animals, ink blots: everyone sees something.</p></section>
+<section><h2>It is a real constituency</h2>
+<div class="ph" style="height:300px">[IMAGE: The same constituency with its name, ward boundaries and neighbouring constituencies on a Bengaluru base map. Source: Election Commission shapefiles.]</div>
+<p>Reading constituency maps is a bit like taking a Rorschach test: the same blob suggests different things to different people. But these shapes are not accidents of nature. Somebody drew them.</p></section>
+<section><h2>Can we put a number on "weird"?</h2>
+<p>Borders should follow geography, so a constituency ought to be roughly convex. Wrap the tightest convex polygon (its <b>convex hull</b>) around it and see how much of that polygon it fills.</p>
+<div class="formula fragment">\[ \text{convexity ratio}=\frac{\text{area of constituency}}{\text{area of its convex hull}}\qquad(\text{weirdness}=100\%-\text{ratio}) \]</div>
+<div class="cols fragment"><div class="fig"><svg viewBox="0 0 130 85" width="260"><polygon points="10,70 30,15 60,55 90,15 120,70" fill="#555"/><polygon points="10,70 30,15 90,15 120,70" fill="none" stroke="#c53030" stroke-width="2" stroke-dasharray="4"/></svg><div class="cap">solid: constituency · dashed: convex hull</div></div>
+<div class="ph" style="height:150px">[NUMBERS: convexity ratio for a few Bengaluru constituencies, computed from Election Commission constituency shapefiles (area of constituency divided by area of its convex hull).]</div></div></section>
+<section><h2>A good start, but a weak witness</h2>
+<ul><li class="fragment">Rivers, coastlines and state borders also force ugly shapes.</li>
+<li class="fragment">A skilled map-drawer can hit a goal with perfectly tidy-looking districts.</li>
+<li class="fragment">A shape score describes <em>one map</em>. It cannot tell us what a <em>fair process</em> would have produced instead.</li></ul>
+<p class="fragment">To answer that, we need a precise model of the maps themselves. That is where graph theory comes in.</p></section>
+</section>
+
+<section>
+<section><h2>Gerrymandering</h2>
+<p>Drawing district boundaries so that one party or group gets more seats than its votes would normally earn. The name comes from Governor Elbridge Gerry, whose 1812 Massachusetts map produced a salamander-shaped district.</p>
+<div class="ph" style="height:230px">[IMAGE: "The Gerry-Mander" cartoon, 1812 (Wikimedia Commons): the salamander-shaped Essex County district.]</div></section>
+</section>
+
+<section>
+<section><h2>A state with 27 blocks</h2>
+<div class="cols"><div><p>Picture a tiny state made of 27 equal voting blocks in a 3 by 9 layout. Each block leans towards <span class="A">Party A</span> or <span class="B">Party B</span>: 15 lean A and 12 lean B, so A has about 56% of the vote.</p>
+<p>The state elects 3 representatives. We must cut it into 3 districts of 9 blocks each, every district in one connected piece.</p></div>
+<div class="fig"><div id="m0"></div><div class="cap">Each square is a voting block, coloured by the party it leans to</div></div></div></section>
+<section><h2>Two legal ways to draw it</h2>
+<div class="cols"><div class="fig"><div id="m1"></div><div class="cap">Map 1: three 3×3 squares<br><b>A wins 2 seats, B wins 1</b></div></div>
+<div class="fig"><div id="m2"></div><div class="cap">Map 2<br><b>A wins 1 seat, B wins 2</b></div></div></div>
+<p class="fragment s">Both maps are connected and equal in size. In Map 2, A's voters are <b>packed</b> into one district (8 of 9 lean A) and <b>cracked</b> across the other two (4 and 3 of 9), so A loses both despite having 56% of the vote.</p></section>
+<section><h2>From a map to a graph</h2>
+<div class="cols"><div class="fig"><div id="m3"></div></div><div class="fig"><div id="g0"></div></div></div>
+<p>Replace each block by a <b>vertex</b>, and join two vertices by an <b>edge</b> when their blocks share a side. This gives a graph \(G=(V,E)\) with \(|V|=27\) and \(|E|=24+18=42\). Adjacency is the only geometry we keep.</p></section>
+<section><h2>Districts and their boundary</h2>
+<p>A map with 3 districts is a <b>partition</b> \(V=D_1\cup D_2\cup D_3\) into connected pieces of 9 vertices each. Its <b>boundary</b> is the set of edges whose endpoints lie in different districts: an <b>edge cut</b>.</p>
+<div class="cols"><div class="fig"><div id="c1"></div><div class="cap">Map 1: boundary of 6 edges</div></div><div class="fig"><div id="c2"></div><div class="cap">Map 2: boundary of 12 edges</div></div></div></section>
+</section>
+
+<section>
+<section><h2>Which map looks more compact?</h2>
+<p>A compact district is tidy and round; a sprawling one touches many neighbours. In graph terms every block has the same area, and a district's "perimeter" is the number of its edges that get cut. Sprawl means more cut edges.</p>
+<div class="cols3"><div class="fig"><div id="k1"></div><div class="cap">Map 1, three 3×3 squares: <b>6</b></div></div><div class="fig"><div id="k2"></div><div class="cap">Map 2: <b>12</b></div></div><div class="fig"><div id="k3"></div><div class="cap">Map 3, three 1×9 strips: <b>18</b></div></div></div>
+<p class="s">Boundary size is our first compactness score: smaller is more compact.</p></section>
+<section><h2>The boundary only sees the outside</h2>
+<p>Two districts can have equally long boundaries and still differ a lot inside. One could be a solid block. The other could be two blobs joined by a thin chain of blocks, where a single edge (a bridge) holds the district together.</p>
+<p class="fragment">The boundary count cannot see that bottleneck. We want a second score that measures how <b>well-knit</b> a district is on the inside.</p></section>
+<section><h2>Spanning trees</h2>
+<p>A <b>spanning tree</b> of a graph is a connected subgraph with no cycles that touches every vertex. A district of 9 blocks, seen as a graph, has spanning trees with exactly 8 edges. Let \(\tau\) be the number of spanning trees.</p>
+<div class="cols"><div class="fig"><div class="minis"><div id="t0"></div></div><div class="cap">Path on 4 vertices: \(\tau=1\)</div></div>
+<div class="fig fragment"><div class="minis"><div id="ta"></div><div id="tb"></div><div id="tc"></div><div id="td"></div></div><div class="cap">4-cycle (a 2×2 block): delete any one of its 4 edges, so \(\tau=4\)</div></div></div></section>
+<section><h2>\(\tau\) measures how well-knit a district is</h2>
+<ul><li>Each cycle lets you choose which of its edges to leave out, and the choices multiply. A solid block is full of cycles.</li>
+<li class="fragment">A path or a long tail has no cycles. All its edges lie in every spanning tree, so it contributes a factor of 1.</li>
+<li class="fragment">A bridge, like the thin link in a dumbbell-shaped district, is also in every spanning tree and gives no choice.</li></ul>
+<p class="fragment">So \(\tau\) is large exactly when a district is thick and well-connected inside. A 3×3 block has \(\tau=192\); a 1×9 path has \(\tau=1\).</p></section>
+<section><h2>A tree score for the whole map</h2>
+<div class="formula">\[ \text{tree score}=\tau(D_1)\cdot\tau(D_2)\cdot\tau(D_3) \]</div>
+<table><tr><th></th><th>boundary</th><th>\(\tau\) of the three districts</th><th>tree score</th></tr>
+<tr><td>Map 1 (squares)</td><td>6</td><td>192, 192, 192</td><td>7,077,888</td></tr>
+<tr class="fragment"><td>Map 2</td><td>12</td><td>15, 16, 15</td><td>3,600</td></tr>
+<tr class="fragment"><td>Map 3 (strips)</td><td>18</td><td>1, 1, 1</td><td>1</td></tr></table>
+<p class="fragment s">The two scores agree: shorter boundary, larger tree score. The numbers explode quickly, so people usually compare their logarithms.</p></section>
+</section>
+
+<section>
+<section><h2>Is Map 2 suspicious?</h2>
+<p>We now have numbers for Map 2 (boundary 12, tree score 3,600, one seat for A despite 56% of the vote), but a number needs a reference: is 12 jagged? Is one seat unusual?</p>
+<p class="fragment">So we build the reference: draw many maps of the <b>same state</b> with a <b>party-blind</b> process (call them <b>neutral maps</b>) and see where Map 2 falls among them.</p>
+<div class="cols"><ul class="s"><li class="fragment"><b>Party-blind:</b> the process sees only the graph (which blocks touch, how big each district must be), never which blocks lean A or B. Any tilt in its results comes from geography alone.</li>
+<li class="fragment"><b>Compactness built in:</b> maps are drawn with probability proportional to their tree score, so tidy maps come up often and sprawling ones rarely. This is how the standard ReCom sampler behaves, at least approximately.</li></ul>
+<div class="fig"><div id="s2g"></div><div class="cap">Map 2 as a graph (red: boundary edges)</div></div></div></section>
+<section><h2>Neutral maps for our state</h2>
+<p>We drew <b>3,249</b> neutral maps for our 27-block state and counted A's seats in each. The chart shows how often each outcome occurred, with one example neutral map of each. The markers show where our three maps land.</p>
+<div class="nm"><div class="refs">
+<div><span class="mk" style="color:#2b6cb0">●</span> <b>Map 1</b> (squares)<div id="r1g"></div><div class="cap">boundary 6 · score 7,077,888 · A wins 2</div></div>
+<div><span class="mk" style="color:#c53030">★</span> <b>Map 2</b><div id="r2g"></div><div class="cap">boundary 12 · score 3,600 · A wins 1</div></div>
+<div><span class="mk" style="color:#6b3fa0">◆</span> <b>Map 3</b> (strips)<div id="r3g"></div><div class="cap">boundary 18 · score 1 · A wins 2</div></div></div>
+<div class="oc">
+<div><div class="bw"><div class="mks"><span style="color:#c53030">★</span></div><span>2.6%</span><div class="bar" style="height:5px"></div></div><div id="e1"></div><div class="cap"><b>A wins 1 seat</b><br>A votes per district: 4, 7, 4<br>boundary 9</div></div>
+<div><div class="bw"><div class="mks"><span style="color:#2b6cb0">●</span><span style="color:#6b3fa0">◆</span></div><span>94.4%</span><div class="bar" style="height:150px"></div></div><div id="e2"></div><div class="cap"><b>A wins 2 seats</b><br>A votes per district: 6, 5, 4<br>boundary 9</div></div>
+<div><div class="bw"><div class="mks">&nbsp;</div><span>3.0%</span><div class="bar" style="height:5px"></div></div><div id="e3"></div><div class="cap"><b>A wins 3 seats</b><br>A votes per district: 5, 5, 5<br>boundary 10</div></div></div></div></section>
+<section><h2>Packing and cracking: the tools</h2>
+<p>Seats go to majorities, so a gerrymander tries to make its own votes count and the other side's votes go to waste. Choosing which blocks to put together, that is, choosing the cut edges, is how.</p>
+<div class="cols"><div class="fig"><div id="s4g"></div><div class="cap">Map 2 as a graph, districts tinted</div></div><div class="fig"><div id="vb"></div></div></div>
+<ul class="s"><li class="fragment"><b>Packing:</b> pile the other side's voters into a few districts they win by far more than needed. District 2 has 8 A voters; 5 would do, so 3 are wasted.</li>
+<li class="fragment"><b>Cracking:</b> split the rest so they fall just short everywhere. A's other 7 voters are split 4 and 3, and lose both districts.</li>
+<li class="fragment"><b>Wasted votes</b> (extra votes in a win, plus every vote in a loss): A wastes 10 of its 15 votes, B only 2 of its 12.</li></ul></section>
+<section><h2>Why Map 2 looks suspicious</h2>
+<div class="cols"><div class="fig"><div id="s5g"></div><div class="cap">Map 2: A wins 1 seat of 3 with 56% of the vote</div></div>
+<ul class="s"><li class="fragment"><b>Rare outcome:</b> A wins 1 seat in only 2.6% of neutral maps: about 1 draw in 40.</li>
+<li class="fragment"><b>Packed and cracked:</b> 8 of 9 lean A in District 2, and 4 and 3 in the others.</li>
+<li class="fragment"><b>Somewhat sprawling:</b> boundary 12 against an average of 8.9; tree score 3,600 against typically around 100,000.</li></ul></div>
+<p class="fragment">Geography alone gives this outcome about once in 40 draws, and Map 2 reaches it with a more sprawling shape than most. The simplest explanation is that its lines were drawn to produce it.</p>
+<p class="fragment s">That is evidence, not proof of intent: the test says only that geography is an unlikely explanation. Our state is tiny and our sampler simplified.</p></section>
+<section><h2>North Carolina, 2016: the same test in court</h2>
+<p>The 2016 congressional map elected 10 Republicans and 3 Democrats. A Duke team led by Jonathan Mattingly drew 24,518 neutral maps of the state and scored each with actual 2016 congressional votes.</p>
+<div class="fig"><svg viewBox="0 0 680 235" style="width:100%;max-width:780px"><text x="340" y="20" text-anchor="middle" font-size="16" font-weight="700" fill="#12263f">24,518 neutral maps of North Carolina's 13 districts, scored with actual 2016 votes</text>
+<rect x="20" y="40" width="624" height="46" fill="#9fb3c8"/><text x="332" y="69" text-anchor="middle" font-size="16" font-weight="700" fill="#12263f">More than 99%: Democrats win 4 or more of the 13 seats</text>
+<rect x="644" y="40" width="6" height="46" fill="#c53030"/><line x1="647" y1="86" x2="647" y2="112" stroke="#c53030" stroke-width="2"/>
+<text x="647" y="132" text-anchor="end" font-size="15" font-weight="700" fill="#c53030">★ Fewer than 1%: Democrats win only 3, as in the enacted map</text>
+<text x="20" y="178" font-size="15" font-weight="700" fill="#12263f">Enacted 2016 map: 10 Republican, 3 Democratic seats</text><rect x="20" y="190" width="26" height="26" rx="4" fill="#c53030"/><text x="33" y="209" text-anchor="middle" font-size="14" font-weight="700" fill="#fff">R</text><rect x="50" y="190" width="26" height="26" rx="4" fill="#c53030"/><text x="63" y="209" text-anchor="middle" font-size="14" font-weight="700" fill="#fff">R</text><rect x="80" y="190" width="26" height="26" rx="4" fill="#c53030"/><text x="93" y="209" text-anchor="middle" font-size="14" font-weight="700" fill="#fff">R</text><rect x="110" y="190" width="26" height="26" rx="4" fill="#c53030"/><text x="123" y="209" text-anchor="middle" font-size="14" font-weight="700" fill="#fff">R</text><rect x="140" y="190" width="26" height="26" rx="4" fill="#c53030"/><text x="153" y="209" text-anchor="middle" font-size="14" font-weight="700" fill="#fff">R</text><rect x="170" y="190" width="26" height="26" rx="4" fill="#c53030"/><text x="183" y="209" text-anchor="middle" font-size="14" font-weight="700" fill="#fff">R</text><rect x="200" y="190" width="26" height="26" rx="4" fill="#c53030"/><text x="213" y="209" text-anchor="middle" font-size="14" font-weight="700" fill="#fff">R</text><rect x="230" y="190" width="26" height="26" rx="4" fill="#c53030"/><text x="243" y="209" text-anchor="middle" font-size="14" font-weight="700" fill="#fff">R</text><rect x="260" y="190" width="26" height="26" rx="4" fill="#c53030"/><text x="273" y="209" text-anchor="middle" font-size="14" font-weight="700" fill="#fff">R</text><rect x="290" y="190" width="26" height="26" rx="4" fill="#c53030"/><text x="303" y="209" text-anchor="middle" font-size="14" font-weight="700" fill="#fff">R</text><rect x="320" y="190" width="26" height="26" rx="4" fill="#2b6cb0"/><text x="333" y="209" text-anchor="middle" font-size="14" font-weight="700" fill="#fff">D</text><rect x="350" y="190" width="26" height="26" rx="4" fill="#2b6cb0"/><text x="363" y="209" text-anchor="middle" font-size="14" font-weight="700" fill="#fff">D</text><rect x="380" y="190" width="26" height="26" rx="4" fill="#2b6cb0"/><text x="393" y="209" text-anchor="middle" font-size="14" font-weight="700" fill="#fff">D</text></svg></div>
+<p class="cap">Simplified graphic of the two published results. The original histogram is in Mattingly's expert report in <i>Common Cause v. Rucho</i>.</p></section>
+<section><h2>What came of it</h2>
+<ul><li class="fragment">Fewer than 1% of neutral maps gave a result as lopsided as the enacted one. More than 99% gave Democrats at least one more seat.</li>
+<li class="fragment">Shape did not give it away: the oddly shaped 2012 map and its tidier 2016 replacement were equally atypical.</li>
+<li class="fragment">A federal court struck the map down in 2018. In <i>Rucho v. Common Cause</i> (2019) the Supreme Court held that federal courts cannot decide partisan gerrymandering claims, but ensemble evidence continues to be used in state cases.</li></ul>
+<p class="cap" style="text-align:left">Their sampler differs from ReCom; the idea of comparing against neutral maps is the same.</p></section>
+</section>
+
+
+<section>
+<section><h2>Assam, 2023: redrawing the lines</h2>
+<p>The Election Commission's final delimitation order (11 August 2023) was Assam's first full redraw since 1976. The inputs read like our model:</p>
+<ul class="s"><li class="fragment"><b>Vertices:</b> villages and wards, kept intact and never split.</li>
+<li class="fragment"><b>Population:</b> the 2001 Census, which the Constitution fixes until figures from the first census after 2026 are published. Seats were allocated to the 31 districts (10 in 1976) in three density bands, each with a ±10% population margin.</li>
+<li class="fragment"><b>Compactness:</b> "as far as practicable", alongside physical features, administrative boundaries and public convenience.</li>
+<li class="fragment"><b>Result:</b> 126 assembly and 14 Lok Sabha seats unchanged in number; ST-reserved assembly seats 16 → 19, SC 8 → 9; Bodoland districts 11 → 15 seats.</li></ul></section>
+<section><h2>Reactions</h2>
+<div class="cols"><div class="tile fragment" style="text-align:left"><b>Concerns raised</b> <span class="s">(opposition parties, Barak Valley groups)</span>
+<ul class="s"><li>Muslim-majority assembly seats fall from 29 to 22, by AIUDF's count.</li><li>Barak Valley drops from 15 to 13 seats despite population growth, while Bodoland rises from 11 to 15.</li><li>Congress says the Lok Sabha seats it held (Kaliabor, Nagaon, Barpeta) were targeted.</li><li>Critics say Muslim-majority seats were drawn with larger populations than Hindu-majority ones.</li><li>The final order came while petitions were pending in the Supreme Court.</li></ul></div>
+<div class="tile fragment" style="text-align:left"><b>Case made by the ECI and the state government</b>
+<ul class="s"><li>The 2001 Census is what the Constitution requires for now.</li><li>Villages and wards were left intact; population margins and compactness followed the stated methodology.</li><li>1,222 representations were considered and about 45% addressed; 19 seats were renamed.</li><li>SC and ST seats follow constitutional formulas.</li><li>The chief minister said seats were decided with people's well-being in mind and that some requests for changes were met; supporters say it protects indigenous communities.</li></ul></div></div></section>
+<section><h2>Which of these disagreements are mathematical?</h2>
+<ul><li class="fragment"><b>Population balance.</b> Do the ±10% margins hold, and are they applied evenly? A count can settle that.</li>
+<li class="fragment"><b>Compactness.</b> Boundary and tree scores can measure how sprawling each constituency is.</li>
+<li class="fragment"><b>Constraints.</b> Reservation quotas and the Bodoland provisions shape which partitions are allowed.</li>
+<li class="fragment"><b>Objective.</b> Which communities seats should protect, and what counts as fair, is a political question.</li></ul>
+<p class="fragment s">To apply our test to Assam we would need the final maps and precinct-level vote data, then compare the result with neutral maps built under the same constraints.</p></section>
+</section>
+
+<section>
+<section><h2>Putting it together</h2>
+<ol class="s"><li class="fragment"><b>Formulate.</b> Blocks become vertices and shared sides become edges. A map is a partition into connected, equal-size pieces, and its boundary is an edge cut.</li>
+<li class="fragment"><b>Score.</b> Cut size measures sprawl from the outside; the spanning-tree count \(\tau\) measures how well-knit each district is inside.</li>
+<li class="fragment"><b>Compare.</b> Neutral maps are party-blind and prefer compact shapes. Map 2 gave A one seat at 56% of the vote; neutral maps do that 2.6% of the time.</li>
+<li class="fragment"><b>Flag.</b> The same test flagged North Carolina's 2016 map: fewer than 1% of 24,518 neutral maps matched it. This is evidence for a closer look, not proof of intent.</li></ol>
+<p class="fragment s">Run backwards, the same graph model designs gerrymanders: finding the best one is NP-complete even on planar graphs, yet local search finds strong maps in practice. Detection and design share one model.</p></section>
+<section><h2>References</h2><ul class="s">
+<li>Ahmad, Dahlia, Raaum, Rogers, Todd. Mathematics of Gerrymandering (UIC poster).</li>
+<li>DeFord, Duchin, Solomon. Recombination (HDSR 2021). Clelland et al., Compactness statistics for spanning tree recombination (2021).</li>
+<li>Dippel, Roy, Vetta. Gerrymandering planar graphs (AAMAS 2024).</li>
+<li>Duke Today (2019), "Duke mathematics has its day in court"; Kagan, J., dissent in Rucho v. Common Cause (2019).</li>
+<li>ECI / PIB press release, 11 Aug 2023: final delimitation order for Assam.</li>
+<li>Coverage of the Assam delimitation, 2023: Scroll.in, Sabrang India, Global Voices, Organiser, Radiance News.</li></ul></section>
+</section>
+
+</div></div>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/plugin/math/math.js"></script>
+<script>
+const PC={A:'#2b6cb0',B:'#dd6b20'},PT={A:'#cfe0f4',B:'#f8d6bb'},T=['#fbe3e1','#dcecfb','#e2f4dc'],$=id=>document.getElementById(id);
+function bord(dis,R,C,s){let h='';for(let r=0;r<R;r++)for(let c=0;c<C;c++){if(c+1<C&&dis[r][c]!=dis[r][c+1])h+=`<line x1="${(c+1)*s}" y1="${r*s}" x2="${(c+1)*s}" y2="${(r+1)*s}" stroke="#1d2a3a" stroke-width="4"/>`;
+if(r+1<R&&dis[r][c]!=dis[r+1][c])h+=`<line x1="${c*s}" y1="${(r+1)*s}" x2="${(c+1)*s}" y2="${(r+1)*s}" stroke="#1d2a3a" stroke-width="4"/>`}
+return h+`<rect x="0" y="0" width="${C*s}" height="${R*s}" fill="none" stroke="#1d2a3a" stroke-width="4"/>`}
+function M(id,par,dis,w){const R=par.length,C=par[0].length,s=40;let h=`<svg viewBox="-4 -4 ${C*s+8} ${R*s+8}" style="width:${w}px">`;
+for(let r=0;r<R;r++)for(let c=0;c<C;c++){const p=par[r][c];h+=`<rect x="${c*s}" y="${r*s}" width="${s}" height="${s}" fill="${PT[p]}" stroke="#fff" stroke-width="1.5"/><text x="${c*s+s/2}" y="${r*s+s/2+6}" text-anchor="middle" font-size="17" font-weight="700" fill="${PC[p]}">${p}</text>`}
+$(id).innerHTML=h+(dis?bord(dis,R,C,s):`<rect x="0" y="0" width="${C*s}" height="${R*s}" fill="none" stroke="#1d2a3a" stroke-width="2"/>`)+'</svg>'}
+function G(id,par,dis,o={}){const R=par.length,C=par[0].length,s=40,x=c=>c*s+s/2;let h=`<svg viewBox="-4 -4 ${C*s+8} ${R*s+8}" style="width:${o.w||300}px">`;
+if(dis)for(let r=0;r<R;r++)for(let c=0;c<C;c++)h+=`<rect x="${c*s}" y="${r*s}" width="${s}" height="${s}" fill="${T[dis[r][c]]}"/>`;
+for(let r=0;r<R;r++)for(let c=0;c<C;c++)for(const[dr,dc]of[[0,1],[1,0]]){const r2=r+dr,c2=c+dc;if(r2>=R||c2>=C)continue;const cut=dis&&o.cut&&dis[r][c]!=dis[r2][c2];
+h+=`<line x1="${x(c)}" y1="${x(r)}" x2="${x(c2)}" y2="${x(r2)}" stroke="${cut?'#c53030':'#b4bcc6'}" stroke-width="${cut?3.5:2}"/>`}
+if(dis)h+=bord(dis,R,C,s);
+for(let r=0;r<R;r++)for(let c=0;c<C;c++){const p=par[r][c];h+=`<circle cx="${x(c)}" cy="${x(r)}" r="${s*.3}" fill="${PC[p]}" stroke="#fff" stroke-width="2"/><text x="${x(c)}" y="${x(r)+5}" text-anchor="middle" font-size="14" font-weight="700" fill="#fff">${p}</text>`}
+$(id).innerHTML=h+'</svg>'}
+function Mini(id,R,C,bold){const s=34,p=i=>[(i%C)*s+s/2,Math.floor(i/C)*s+s/2],b=new Set(bold.map(e=>e.join()));let h=`<svg viewBox="0 0 ${C*s} ${R*s}" style="width:${C*s*1.1}px">`;
+for(let i=0;i<R*C;i++)for(const j of[i+1,i+C]){if(j>=R*C||(j==i+1&&(i+1)%C==0))continue;const on=b.has([i,j].join());h+=`<line x1="${p(i)[0]}" y1="${p(i)[1]}" x2="${p(j)[0]}" y2="${p(j)[1]}" stroke="${on?'#1d2a3a':'#d3d9e0'}" stroke-width="${on?5:2}" ${on?'':'stroke-dasharray="3 3"'}/>`}
+for(let i=0;i<R*C;i++)h+=`<circle cx="${p(i)[0]}" cy="${p(i)[1]}" r="8" fill="#6b7785"/>`;$(id).innerHTML=h+'</svg>'}
+const LAY=["BBAABABAA","AAAABAABB","BAABBAABB"],SQ=["000111222","000111222","000111222"],GER=["002211111","002222211","000002211"],ROW=["000000000","111111111","222222222"];
+M('m0',LAY,null,560);M('m1',LAY,SQ,520);M('m2',LAY,GER,520);M('m3',LAY,null,500);G('g0',LAY,null,{w:500});
+G('c1',LAY,SQ,{w:520,cut:1});G('c2',LAY,GER,{w:520,cut:1});
+G('k1',LAY,SQ,{w:340,cut:1});G('k2',LAY,GER,{w:340,cut:1});G('k3',LAY,ROW,{w:340,cut:1});
+Mini('t0',1,4,[[0,1],[1,2],[2,3]]);
+Mini('ta',2,2,[[0,1],[0,2],[1,3]]);Mini('tb',2,2,[[0,1],[0,2],[2,3]]);Mini('tc',2,2,[[0,1],[1,3],[2,3]]);Mini('td',2,2,[[0,2],[1,3],[2,3]]);
+M("e1",LAY,["001111222", "001111222", "000001222"],250);M("e2",LAY,["000011222", "000011222", "011111222"],250);M("e3",LAY,["001111122", "000111222", "000012222"],250);
+function Votes(id){const u=34,x0=48,rows=[[0,4,'1'],[2,8,'2'],[1,3,'3']],note=['B wins','A wins (3 extra)','B wins'];let h='<svg viewBox="0 -22 540 190" style="width:100%">';
+rows.forEach(([lab,a,n],i)=>{const y=i*58;h+=`<rect x="0" y="${y}" width="34" height="34" rx="6" fill="${T[lab]}" stroke="#1d2a3a" stroke-width="2"/><text x="17" y="${y+24}" text-anchor="middle" font-size="18" font-weight="700" fill="#1d2a3a">${n}</text>
+<rect x="${x0}" y="${y}" width="${a*u}" height="34" fill="#2b6cb0"/><rect x="${x0+a*u}" y="${y}" width="${(9-a)*u}" height="34" fill="#dd6b20"/>
+<text x="${x0+a*u/2}" y="${y+23}" text-anchor="middle" font-size="16" font-weight="700" fill="#fff">A ${a}</text><text x="${x0+a*u+(9-a)*u/2}" y="${y+23}" text-anchor="middle" font-size="16" font-weight="700" fill="#fff">B ${9-a}</text>
+<text x="${x0+9*u+12}" y="${y+23}" font-size="15" fill="#333">${note[i]}</text>`});
+h+=`<line x1="${x0+5*u}" y1="-6" x2="${x0+5*u}" y2="160" stroke="#222" stroke-width="2" stroke-dasharray="5 4"/><text x="${x0+5*u}" y="-10" text-anchor="middle" font-size="14" fill="#222">5 votes wins</text>`;
+$(id).innerHTML=h+'</svg>'}
+G('s2g',LAY,GER,{w:360,cut:1});G('r1g',LAY,SQ,{w:230,cut:1});G('r2g',LAY,GER,{w:230,cut:1});G('r3g',LAY,ROW,{w:230,cut:1});G('s4g',LAY,GER,{w:470,cut:1});G('s5g',LAY,GER,{w:440,cut:1});Votes('vb');
+Reveal.initialize({hash:false,history:false,slideNumber:true,width:1280,height:720,margin:.05,plugins:[RevealMath.KaTeX]});
+</script>
+</body></html>
