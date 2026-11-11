@@ -92,11 +92,14 @@
 
 <section><h2>A tree score for the whole map</h2>
 <div class="formula">\[ \text{tree score}=\tau(D_1)\cdot\tau(D_2)\cdot\tau(D_3) \]</div>
+<div class="cols3"><div class="fig"><div id="tf1"></div><div class="cap" id="tfc1"></div></div><div class="fig"><div id="tf2"></div><div class="cap" id="tfc2"></div></div><div class="fig"><div id="tf3"></div><div class="cap" id="tfc3"></div></div></div>
 <table><tr><th></th><th>boundary</th><th>\(\tau\) of the three districts</th><th>tree score</th></tr>
 <tr><td>Map 1 (squares)</td><td>6</td><td>192, 192, 192</td><td>7,077,888</td></tr>
 <tr class="fragment"><td>Map 2</td><td>12</td><td>15, 16, 15</td><td>3,600</td></tr>
 <tr class="fragment"><td>Map 3 (strips)</td><td>18</td><td>1, 1, 1</td><td>1</td></tr></table>
-<p class="fragment">The two scores agree: shorter boundary, larger tree score. The numbers explode quickly, so people usually compare their logarithms.</p></section>
+<p class="fragment">The two scores agree: shorter boundary, larger tree score. The numbers explode quickly, so people usually compare their logarithms.</p>
+
+</section>
 </section>
 
 <section>
@@ -213,6 +216,30 @@ rows.forEach(([lab,a,n],i)=>{const y=i*58;h+=`<rect x="0" y="${y}" width="34" he
 h+=`<line x1="${x0+5*u}" y1="-6" x2="${x0+5*u}" y2="160" stroke="#222" stroke-width="2" stroke-dasharray="5 4"/><text x="${x0+5*u}" y="-10" text-anchor="middle" font-size="14" fill="#222">5 votes wins</text>`;
 $(id).innerHTML=h+'</svg>'}
 G('s2g',LAY,GER,{w:360,cut:1});G('r1g',LAY,SQ,{w:230,cut:1});G('r2g',LAY,GER,{w:230,cut:1});G('r3g',LAY,ROW,{w:230,cut:1});G('s4g',LAY,GER,{w:470,cut:1});G('s5g',LAY,GER,{w:440,cut:1});Votes('vb');
+function rng(a){return()=>{a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+function wil(cs,rnd){const k=c=>c[0]*9+c[1],set=new Set(cs.map(k)),nb=c=>[[1,0],[-1,0],[0,1],[0,-1]].map(d=>[c[0]+d[0],c[1]+d[1]]).filter(q=>q[0]>=0&&q[0]<3&&q[1]>=0&&q[1]<9&&set.has(k(q)));
+const inT=new Set([k(cs[Math.floor(rnd()*cs.length)])]),nx={},E=[];
+for(const v of cs){let u=v;while(!inT.has(k(u))){const o=nb(u);nx[k(u)]=o[Math.floor(rnd()*o.length)];u=nx[k(u)]}
+u=v;while(!inT.has(k(u))){const w=nx[k(u)];E.push([Math.min(k(u),k(w)),Math.max(k(u),k(w))]);inT.add(k(u));u=w}}
+return E}
+const TM=[['tf1',SQ],['tf2',GER],['tf3',ROW]],NF=10,TFR=[];
+(function(){const rnd=rng(7);TM.forEach(([id,dis])=>{const ds={};for(let r=0;r<3;r++)for(let c=0;c<9;c++)(ds[dis[r][c]]=ds[dis[r][c]]||[]).push([r,c]);
+const seen=new Set(),fr=[];for(let t=0;t<600&&fr.length<NF;t++){const E=[].concat(...Object.values(ds).map(cs=>wil(cs,rnd))),key=E.map(e=>e.join('-')).sort().join();if(!seen.has(key)){seen.add(key);fr.push(E)}}
+const u=fr.length;while(fr.length<NF)fr.push(fr[fr.length%u]);TFR.push({fr,u})})})();
+const TN=[192**3,15*16*15,1],TL=[];
+function TB(n){const dis=TM[n][1],s=40,x=k=>(k%9)*s+s/2,y=k=>Math.floor(k/9)*s+s/2;
+let h=`<svg viewBox="-4 -4 ${9*s+8} ${3*s+8}" style="width:330px">`;
+for(let r=0;r<3;r++)for(let c=0;c<9;c++)h+=`<rect x="${c*s}" y="${r*s}" width="${s}" height="${s}" fill="${T[dis[r][c]]}"/>`;
+for(let r=0;r<3;r++)for(let c=0;c<9;c++)for(const[dr,dc]of[[0,1],[1,0]]){const r2=r+dr,c2=c+dc;if(r2>2||c2>8)continue;const a=r*9+c,b=r2*9+c2,cut=dis[r][c]!=dis[r2][c2]?1:0;
+h+=`<line data-e="${a}-${b}" data-cut="${cut}" x1="${x(a)}" y1="${y(a)}" x2="${x(b)}" y2="${y(b)}" stroke="${cut?'#e3a5a5':'#c9d0d8'}" stroke-width="1.5"/>`}
+h+=bord(dis,3,9,s);for(let k=0;k<27;k++)h+=`<circle cx="${x(k)}" cy="${y(k)}" r="7" fill="#6b7785"/>`;
+$(TM[n][0]).innerHTML=h+'</svg>';TL[n]=[...$(TM[n][0]).querySelectorAll('line[data-e]')]}
+function TF(n,i){const E=new Set(TFR[n].fr[i].map(e=>e.join('-')));
+TL[n].forEach(l=>{const t=E.has(l.dataset.e);l.setAttribute('stroke',t?'#1d2a3a':l.dataset.cut=='1'?'#e3a5a5':'#c9d0d8');l.setAttribute('stroke-width',t?5:1.5)});
+$('tfc'+(n+1)).textContent=`Map ${n+1} · tree ${Math.min(i+1,TN[n])} of ${TN[n].toLocaleString()}`}
+let TI=0,TT=null;TM.forEach((_,n)=>TB(n));const tick=()=>TM.forEach((_,n)=>TF(n,TI));tick();
+const TS=()=>{const on=$('tf1').closest('section').classList.contains('present');if(on&&!TT){TI=0;tick();TT=setInterval(()=>{TI=(TI+1)%NF;tick()},1000)}else if(!on&&TT){clearInterval(TT);TT=null}};
 Reveal.initialize({hash:false,history:false,slideNumber:true,width:1280,height:720,margin:.05,plugins:[RevealMath.KaTeX]});
+Reveal.on('ready',TS);Reveal.on('slidechanged',TS);
 </script>
 </body></html>
