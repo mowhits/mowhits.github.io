@@ -44,24 +44,25 @@
 <ul class=""><li class="fragment"><b>K.R. Pura scores 53%</b>: second lowest of Bengaluru&rsquo;s 28 assembly constituencies. Only Rajarajeshwarinagar (51%) is lower. The Bengaluru median is 70%.</li>
 <li class="fragment">The same test on Lok Sabha seats: <b>Kaliabor (Assam) 39%</b>, lowest in the country; <b>Bangalore North 51%</b>, fourth lowest; national average 72%.</li>
 </ul></div></section>
-<section><h2>A good start, but a weak metric</h2>
-<div class="cols"><div>
+<section><h2>A good start, but a weak metric</h2><div>
 <ul><li class="fragment">Rivers, coastlines and state borders also force ugly shapes.</li>
 <li class="fragment">A skilled map-drawer can hit a goal with perfectly tidy-looking districts.</li>
 <li class="fragment">A shape score describes <em>one map</em>. It cannot tell us what a <em>fair process</em> would have produced instead.</li></ul>
 <p class="fragment">To answer that, we need a precise model of the maps themselves. That is where graph theory comes in.</p></div>
-<div class="fig fragment imgslot"><img src="/gt/charlie.gif" alt="Charlie day"></div></div>
 </section>
 </section>
 
 <section>
 <section><h2>Gerrymandering</h2>
-<p>The practice of (re)drawing district boundaries so that one party or group gets more seats than its votes would normally earn. The name comes from Governor Elbridge Gerry, whose 1812 Massachusetts map produced a rather unusual salamander-shaped district.</p>
-<div class="fig"><div class="imgslot" style="height:300px"><img src="/gt/gerry.png" alt="The Gerry-Mander, 1812 cartoon"></div><div class="cap">&ldquo;The Gerry-Mander&rdquo;, Boston Gazette, 1812</div></div></section>
+<div class="cols">
+<div><p>The practice of (re)drawing district boundaries so that one party or group gets more seats than its votes would normally earn. The name comes from Governor Elbridge Gerry, whose 1812 Massachusetts map produced a rather unusual salamander-shaped district.</p></div>
+<div class="fig"><div class="imgslot" style="height:300px"><img src="/gt/gerry.png" alt="The Gerry-Mander, 1812 cartoon"></div><div class="cap">&ldquo;The Gerry-Mander&rdquo;, Boston Gazette, 1812</div></div>
+</div></section>
 </section>
 
 <section>
-    <section><h2>Modelling and detecting Gerrymandering using Graph Theory</h2></section>
+    <section><h2>Modelling and detecting Gerrymandering using Graph Theory</h2>
+    <div class="fig fragment imgslot" style="height:420px"><img src="/gt/charlie.gif" alt="Charlie day"></div></section>
 <section><h2>AB709-istan: state with 27 blocks</h2>
 <div class="cols"><div><p>Picture a tiny state made of 27 equal voting blocks in a 3 by 9 layout. Each block leans towards <span class="A">Party A</span> or <span class="B">Party B</span>: 15 lean A and 12 lean B, so A has about 56% of the vote.</p>
 <p>The state elects 3 representatives. We must cut it into 3 districts of 9 blocks each, every district in one connected piece.</p></div>
